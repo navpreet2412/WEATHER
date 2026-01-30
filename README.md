@@ -37,7 +37,7 @@ This project is built to display current weather conditions such as temperature,
 weather-app/
 │
 ├── index.html        # Current weather page
-├── forecast.html     # 7-day forecast page
+├── forecast.html     # 5-day forecast page
 │                     # Weather logic & API calls
 ├── css/
 │   └── style.css     # UI & design
