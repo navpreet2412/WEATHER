@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            text-align: center;
+            color: #000;
+        }
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            margin: 10px;
+            padding: 10px;
+            width: 80%;
+        }
+        .forecast {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>5-Day Weather Forecast</h2>
+        <input type="text" id="city" placeholder="Enter city name">
+        <button onclick="getWeather()">Get Forecast</button>
+        <div class="forecast" id="forecast"></div>
+    </div>
+
+    <script>
+        async function getWeather() {
+            const city = document.getElementById('city').value;
+            const apiKey = '3dbab843d3da174ffeb10e6b2ce92e50';
+            const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.cod !== "200") {
+                    document.getElementById('forecast').innerHTML = "City not found!";
+                    return;
+                }
+                
+                const dailyForecast = {};
+                data.list.forEach(entry => {
+                    const date = entry.dt_txt.split(" ")[0];
+                    if (!dailyForecast[date]) {
+                        dailyForecast[date] = {
+                            temp: [],
+                            description: new Set()
+                        };
+                    }
+                    dailyForecast[date].temp.push(entry.main.temp);
+                    dailyForecast[date].description.add(entry.weather[0].description);
+                });
+
+                let forecastHTML = '<h3>Forecast:</h3>';
+                Object.keys(dailyForecast).slice(0, 5).forEach(date => {
+                    const temps = dailyForecast[date].temp;
+                    const avgTemp = temps.reduce((a, b) => a + b) / temps.length;
+                    const descriptions = Array.from(dailyForecast[date].description).join(", ");
+                    forecastHTML += `<p><strong>${date}:</strong> ${avgTemp.toFixed(1)}°C, ${descriptions}</p>`;
+                });
+                document.getElementById('forecast').innerHTML = forecastHTML;
+            } catch (error) {
+                document.getElementById('forecast').innerHTML = "Error fetching data";
+            }
+        }
+    </script>
+</body>
+</html>
