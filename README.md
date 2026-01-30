@@ -38,12 +38,10 @@ weather-app/
 │
 ├── index.html        # Current weather page
 ├── forecast.html     # 7-day forecast page
-│
+│                     # Weather logic & API calls
 ├── css/
 │   └── style.css     # UI & design
 │
-├── js/
-│   └── weather.js    # Weather logic & API calls
 │
 └── README.md
 ```
